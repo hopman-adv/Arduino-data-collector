@@ -1,0 +1,18 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: temperature
+  flyway:
+    locations: classpath:/db/migration
+#    schemas: temperature
+    baselineOnMigrate: true
+    enabled: true
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
