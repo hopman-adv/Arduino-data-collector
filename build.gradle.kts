@@ -39,7 +39,12 @@ dependencies {
 	implementation ("io.github.oshai:kotlin-logging-jvm:7.0.0")
 	runtimeOnly("org.flywaydb:flyway-database-postgresql:11.1.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation ("com.h2database:h2")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.testcontainers:testcontainers:1.20.4")
+	testImplementation("org.testcontainers:junit-jupiter:1.20.4")
+	testImplementation("org.testcontainers:postgresql:1.20.4")
+	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

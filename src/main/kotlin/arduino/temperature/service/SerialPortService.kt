@@ -21,7 +21,7 @@ class SerialPortService(val repository: TemperatureRepository) {
 
     fun getSerialPorts(): Array<out SerialPort>? {
         return SerialPort.getCommPorts().also {
-            log.info { ports }
+            log.info { this.getSerialPorts() }
         }
     }
 
@@ -54,6 +54,7 @@ class SerialPortService(val repository: TemperatureRepository) {
         scope?.launch {
             mutex.withLock {
                 try {
+                    var tempTemp = 0.0
                     while (isActive) {
                         val readBuffer = ByteArray(100)
                         val numRead: Int = port.readBytes(readBuffer, readBuffer.size)
@@ -65,14 +66,14 @@ class SerialPortService(val repository: TemperatureRepository) {
                             val pattern = Regex("""\d+\.\d{2}""")
                             text.split(";").filter { it.isNotEmpty() && pattern.matches(it) }
                                 .forEach {
-                                    repository.save(
-                                        Temperature(
-                                            null,
-                                            it.toDouble(),
-                                            "Celsius",
-                                            LocalDateTime.now()
-                                        )
-                                    )
+                                    val temperature = it.toDouble()
+                                    if (temperature == tempTemp) {
+                                        log.info { "Temperature ${temperature} is the same as the previous one. Skipping value." }
+                                        return@forEach
+                                    } else {
+                                        tempTemp = temperature
+                                        repository.save(Temperature(null, temperature, "Celsius", LocalDateTime.now()))
+                                    }
                                 }
                         }
                     }
