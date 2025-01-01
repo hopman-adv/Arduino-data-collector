@@ -19,7 +19,7 @@ version = "latest"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
 
@@ -66,7 +66,7 @@ tasks.withType<Test> {
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
 	// defining java version and disabling spring cloud bindings because there is bug when downloading it
-	environment.put("BP_JVM_VERSION", "21")
+	environment.put("BP_JVM_VERSION", "17")
 	environment.put("BP_SPRING_CLOUD_BINDINGS_DISABLED", "true")
 	environment.put("BPL_SPRING_CLOUD_BINDINGS_DISABLED", "true")
 }
