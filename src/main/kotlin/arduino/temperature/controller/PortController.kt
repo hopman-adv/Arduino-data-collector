@@ -2,12 +2,12 @@ package arduino.temperature.controller
 
 import arduino.temperature.service.SerialPortService
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 val log = KotlinLogging.logger {}
+
 @RestController
 @RequestMapping("/ports")
 class PortController(private val portService: SerialPortService) {

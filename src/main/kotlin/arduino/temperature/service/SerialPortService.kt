@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 private val log = KotlinLogging.logger {}
 
 @Service
-class SerialPortService(val repository: TemperatureRepository) {
+class SerialPortService(val temperatureRepository: TemperatureRepository) {
 
     private var scope: CoroutineScope? = null
     private val ports = mutableListOf<SerialPort>()
@@ -21,7 +21,7 @@ class SerialPortService(val repository: TemperatureRepository) {
 
     fun getSerialPorts(): Array<out SerialPort>? {
         return SerialPort.getCommPorts().also {
-            log.info { this.getSerialPorts() }
+            log.info { it }
         }
     }
 
@@ -67,12 +67,12 @@ class SerialPortService(val repository: TemperatureRepository) {
                             text.split(";").filter { it.isNotEmpty() && pattern.matches(it) }
                                 .forEach {
                                     val temperature = it.toDouble()
-                                    if (temperature == tempTemp) {
-                                        log.info { "Temperature ${temperature} is the same as the previous one. Skipping value." }
+                                    if (temperature in (tempTemp - 0.3)..(tempTemp + 0.3)) {
+                                        log.info { "Temperature $temperature is the same as/close to the previous one. Skipping value." }
                                         return@forEach
                                     } else {
                                         tempTemp = temperature
-                                        repository.save(Temperature(null, temperature, "Celsius", LocalDateTime.now()))
+                                        temperatureRepository.save(Temperature(value = tempTemp, date = LocalDateTime.now()))
                                     }
                                 }
                         }
