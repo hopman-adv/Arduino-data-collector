@@ -12,4 +12,6 @@ data class Temperature(
     val value: Double,
     val unit: String = "Celsius",
     val date: LocalDateTime
-)
+) {
+    constructor() : this(null, 0.0, "Celsius", LocalDateTime.now())
+}

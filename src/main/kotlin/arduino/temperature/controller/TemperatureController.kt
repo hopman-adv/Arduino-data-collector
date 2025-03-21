@@ -11,13 +11,19 @@ import java.time.LocalDateTime
 class TemperatureController(val temperatureRepository: TemperatureRepository) {
 
     @GetMapping("/data")
-    fun getTemperature(): MutableList<Temperature> {
+    fun getTemperature(): List<Temperature> {
         return temperatureRepository.findAll()
     }
    
-    @PostMapping
-    fun createTemperature() {
-        temperatureRepository.save(Temperature(value = 25.0, date = LocalDateTime.now()))
+    @PostMapping("/data")
+    fun createTemperature(): Temperature {
+        return temperatureRepository.save(Temperature(value = 25.0, date = LocalDateTime.now()))
     }
+
+    @GetMapping("/data/date")
+    fun getTemperatureByDate(startDate: LocalDateTime, endDate: LocalDateTime): MutableList<Temperature> {
+        return temperatureRepository.findByDateBetween(startDate, endDate)
+    }
+
 }
 
