@@ -55,6 +55,7 @@ class SerialPortService(val temperatureRepository: TemperatureRepository) {
             mutex.withLock {
                 try {
                     var tempTemp = 0.0
+                    var lastSavedTime: LocalDateTime? = null
                     while (isActive) {
                         val readBuffer = ByteArray(100)
                         val numRead: Int = port.readBytes(readBuffer, readBuffer.size)
@@ -72,7 +73,17 @@ class SerialPortService(val temperatureRepository: TemperatureRepository) {
                                         return@forEach
                                     } else {
                                         tempTemp = temperature
-                                        temperatureRepository.save(Temperature(value = tempTemp, date = LocalDateTime.now()))
+                                        if(lastSavedTime == null || lastSavedTime!!.plusMinutes(10).isBefore(LocalDateTime.now())) {
+                                            lastSavedTime = LocalDateTime.now()
+                                            temperatureRepository.save(
+                                                Temperature(
+                                                    value = tempTemp,
+                                                    date = LocalDateTime.now()
+                                                )
+                                            )
+                                        } else {
+                                            log.info { "Time limit to save temperature $temperature to database not reached. Skipping value." }
+                                        }
                                     }
                                 }
                         }
