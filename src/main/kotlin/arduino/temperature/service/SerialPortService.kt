@@ -68,13 +68,14 @@ class SerialPortService(val temperatureRepository: TemperatureRepository) {
                             text.split(";").filter { it.isNotEmpty() && pattern.matches(it) }
                                 .forEach {
                                     val temperature = it.toDouble()
-                                    if (temperature in (tempTemp - 0.3)..(tempTemp + 0.3)) {
-                                        log.info { "Temperature $temperature is the same as/close to the previous one. Skipping value." }
-                                        return@forEach
-                                    } else {
+                                    //if (temperature in (tempTemp - 0.3)..(tempTemp + 0.3)) {
+                                    //    log.info { "Temperature $temperature is the same as/close to the previous one. Skipping value." }
+                                    //    return@forEach
+                                    //} else {
                                         tempTemp = temperature
-                                        if(lastSavedTime == null || lastSavedTime!!.plusMinutes(10).isBefore(LocalDateTime.now())) {
+                                        if(lastSavedTime == null || lastSavedTime!!.plusMinutes(30).isBefore(LocalDateTime.now())) {
                                             lastSavedTime = LocalDateTime.now()
+					    log.info { "Saving temperature $temperature to database." }	
                                             temperatureRepository.save(
                                                 Temperature(
                                                     value = tempTemp,
@@ -84,7 +85,7 @@ class SerialPortService(val temperatureRepository: TemperatureRepository) {
                                         } else {
                                             log.info { "Time limit to save temperature $temperature to database not reached. Skipping value." }
                                         }
-                                    }
+                                    //}
                                 }
                         }
                     }
